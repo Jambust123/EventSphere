@@ -19,6 +19,13 @@ const Event = sequelize.define('Event', {
   capacity: {
     type: DataTypes.INTEGER,
   },
+  price: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: true,
+    get() {
+        return parseFloat(this.getDataValue('price'));
+    }
+  },
 });
 
 module.exports = Event;
