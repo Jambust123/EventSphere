@@ -1,26 +1,33 @@
 {
-	"dependencies": {
-		"body-parser": "^1.20.3",
-		"dotenv": "^16.4.7",
-		"express": "^4.21.2",
-		"nodemon": "^3.1.9",
-		"pg": "^8.13.1",
-		"pg-hstore": "^2.3.4",
-		"sequelize": "^6.37.5"
-	},
-	"scripts": {
-		"start": "node app.js",
-		"migrate:create": "sequelize migration:create --name",
-		"test": "jest"
-	},
-	"devDependencies": {
-		"jest": "^29.7.0",
-		"sequelize-cli": "^6.6.2",
-		"supertest": "^7.0.0"
-	},
-	"jest": {
-		"testEnvironment": "node",
-		"forceExit": true,
-		"detectOpenHandles": true
-	}
+  "name": "new-project",
+  "version": "1.0.0",
+  "description": "A new project for managing events and users.",
+  "main": "listen.js",
+  "scripts": {
+    "setup-dbs": "psql -f ./db/setup.sql",
+    "seed": "node ./db/seeds/run-seed.js",
+    "test": "jest",
+    "start": "node listen.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/new-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yourusername/new-project/issues"
+  },
+  "homepage": "https://github.com/yourusername/new-project#readme",
+  "devDependencies": {
+    "jest": "^27.5.1",
+    "supertest": "^7.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.19.2",
+    "pg": "^8.7.3"
+  }
 }

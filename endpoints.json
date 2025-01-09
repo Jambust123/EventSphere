@@ -1,0 +1,84 @@
+{
+    "GET /": {
+      "description": "Serves a welcome message"
+    },
+    "GET /api": {
+      "description": "Serves a JSON object of all available endpoints"
+    },
+    "GET /api/events": {
+      "description": "Serves an array of all events",
+      "queries": [],
+      "exampleResponse": {
+        "events": [
+          {
+            "id": 1,
+            "title": "Event 1",
+            "description": "Description 1",
+            "date": "2023-12-31T00:00:00.000Z",
+            "location": "Location 1",
+            "capacity": 100,
+            "price": 50.00,
+            "user_id": 1,
+            "created_at": "2023-01-01T00:00:00.000Z"
+          }
+        ]
+      }
+    },
+    "POST /api/events": {
+      "description": "Creates a new event",
+      "exampleRequest": {
+        "title": "New Event",
+        "description": "Event Description",
+        "date": "2023-12-31",
+        "location": "Location",
+        "capacity": 100,
+        "price": 50.00,
+        "userId": 1
+      },
+      "exampleResponse": {
+        "event": {
+          "id": 2,
+          "title": "New Event",
+          "description": "Event Description",
+          "date": "2023-12-31T00:00:00.000Z",
+          "location": "Location",
+          "capacity": 100,
+          "price": 50.00,
+          "user_id": 1,
+          "created_at": "2023-01-01T00:00:00.000Z"
+        }
+      }
+    },
+    "GET /api/users": {
+      "description": "Serves an array of all users",
+      "queries": [],
+      "exampleResponse": {
+        "users": [
+          {
+            "id": 1,
+            "username": "user1",
+            "email": "user1@example.com",
+            "password": "password1",
+            "created_at": "2023-01-01T00:00:00.000Z"
+          }
+        ]
+      }
+    },
+    "POST /api/users": {
+      "description": "Creates a new user",
+      "exampleRequest": {
+        "username": "newuser",
+        "email": "newuser@example.com",
+        "password": "password123"
+      },
+      "exampleResponse": {
+        "user": {
+          "id": 2,
+          "username": "newuser",
+          "email": "newuser@example.com",
+          "password": "password123",
+          "created_at": "2023-01-01T00:00:00.000Z"
+        }
+      }
+    }
+  }

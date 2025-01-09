@@ -1,49 +1,30 @@
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-require('dotenv').config();
-
-const express = require('express');
-const bodyParser = require('body-parser');
-const sequelize = require('./config/db');
-const eventController = require('./controllers/eventController');
+const express = require("express");
+const cors = require("cors");
+const eventRoutes = require("./routes/eventRoutes");
+const userRoutes = require("./routes/userRoutes");
+const endpoint = require("./endpoints.json");
 
 const app = express();
-app.use(bodyParser.json());
 
-app.get('/api/events', eventController.getAllEvents);
-app.post('/api/events', eventController.createEvent);
-app.patch('/api/events/:id', eventController.updateEvent);
+app.use(cors());
+app.use(express.json());
 
-let server;
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "Welcome to the Event Management API!" });
+});
 
-(async () => {
-  try {
-    console.log('Connecting to the database...');
-    await sequelize.authenticate();
-    console.log('Database connected successfully.');
+app.get("/api", (req, res) => {
+  res.status(200).json(endpoint);
+});
 
-    if (process.env.NODE_ENV === 'development') {
-      await sequelize.sync({ alter: true });
-      console.log('Database models synchronized.');
-    } else {
-      console.log('Skipping database synchronization in production.');
-    }
+app.use("/api/users", userRoutes);
+app.use("/api/events", eventRoutes);
 
-    const PORT = process.env.PORT || 5000;
-    server = app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-  } catch (error) {
-    console.error('Error connecting to the database:', error);
-    process.exit(1);
+app.use((err, req, res, next) => {
+  if (err.status && err.msg) {
+    return res.status(err.status).send({ msg: err.msg });
   }
-})();
-
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught exception:', error);
-  process.exit(1);
+  return res.status(500).send({ msg: "Internal Server Error" });
 });
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled rejection at promise:', promise, 'reason:', reason);
-  process.exit(1);
-});
-
-module.exports = { app, server };
+module.exports = app;
