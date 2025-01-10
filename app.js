@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const eventRoutes = require("./routes/eventRoutes");
 const userRoutes = require("./routes/userRoutes");
+const calendarRoutes = require('./routes/calendarRoutes');
+const authRoutes = require('./routes/authRoutes');
 const endpoint = require("./endpoints.json");
 
 const app = express();
@@ -19,6 +21,8 @@ app.get("/api", (req, res) => {
 
 app.use("/api/users", userRoutes);
 app.use("/api/events", eventRoutes);
+app.use('/api/calendar', calendarRoutes);
+app.use('/api/auth', authRoutes);
 
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {

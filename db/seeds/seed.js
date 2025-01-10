@@ -2,8 +2,11 @@ const { users, events } = require("../data/test-data/index");
 const pool = require("../connection");
 
 const seed = async () => {
+
+  await pool.query("DELETE FROM event_signups");
   await pool.query("DELETE FROM events");
   await pool.query("DELETE FROM users");
+
   await pool.query("ALTER SEQUENCE users_id_seq RESTART WITH 1");
   await pool.query("ALTER SEQUENCE events_id_seq RESTART WITH 1");
 
@@ -15,7 +18,6 @@ const seed = async () => {
   );
 
   const userResults = await Promise.all(userInsertPromises);
-  console.log("Inserted Users:", userResults.map((result) => result.rows[0])); // Debug inserted users
 
   const userIdMap = userResults.reduce((acc, result, index) => {
     acc[users[index].username] = result.rows[0].id;
@@ -34,8 +36,7 @@ const seed = async () => {
     )
   );
 
-  const eventResults = await Promise.all(eventInsertPromises);
-  console.log("Inserted Events:", eventResults.map((result) => result.rows[0])); // Debug inserted events
+  await Promise.all(eventInsertPromises);
 };
 
 module.exports = seed;

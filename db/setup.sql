@@ -21,7 +21,13 @@ CREATE TABLE events (
     location VARCHAR(100) NOT NULL,
     capacity INTEGER NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    user_id INTEGER REFERENCES users(id)
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE 
+);
+
+CREATE TABLE event_signups (
+    event_id INTEGER REFERENCES events(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    PRIMARY KEY (event_id, user_id)
 );
 
 ALTER SEQUENCE users_id_seq RESTART WITH 1;
@@ -44,7 +50,13 @@ CREATE TABLE events (
     location VARCHAR(100) NOT NULL,
     capacity INTEGER NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    user_id INTEGER REFERENCES users(id)
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE event_signups (
+    event_id INTEGER REFERENCES events(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    PRIMARY KEY (event_id, user_id)
 );
 
 ALTER SEQUENCE users_id_seq RESTART WITH 1;

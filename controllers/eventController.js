@@ -1,77 +1,124 @@
-const Event = require('../models/eventModel');
+const Event = require("../models/eventModel");
+const User = require("../models/userModel");
+const pool = require("../db/connection");
 
-exports.createEvent = async (req, res) => {
-    try {
-        const { title, description, date, location, capacity, price, user_id } = req.body;
-
-        if (!title || !description || !date || !location || capacity == null || price == null || user_id == null) {
-            return res.status(400).json({
-                error: "Validation error: Missing required fields.",
-            });
-        }
-
-        const event = await Event.create({ title, description, date, location, capacity, price, user_id });
-        res.status(201).json(event);
-    } catch (error) {
-        console.error("Error creating event:", error);
-        res.status(500).json({ error: error.message });
-    }
+const createEvent = async (req, res) => {
+  let client;
+  try {
+    client = await pool.connect();
+    const { title, description, date, location, capacity, price } = req.body;
+    const user_id = req.user.id;
+    const eventData = {
+      title,
+      description,
+      date,
+      location,
+      capacity,
+      price,
+      user_id,
+    };
+    const event = await Event.create(client, eventData);
+    res.status(201).json(event);
+  } catch (error) {
+    res.status(400).json({ error: "Bad Request" });
+  } finally {
+    if (client) client.release();
+  }
 };
 
-exports.updateEvent = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { title, description, date, location, capacity, price, user_id } = req.body;
-
-        const event = await Event.update(id, { title, description, date, location, capacity, price, user_id });
-
-        if (!event) {
-            return res.status(404).json({ error: "Event not found." });
-        }
-
-        res.status(200).json(event);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+const updateEvent = async (req, res) => {
+  let client;
+  try {
+    client = await pool.connect();
+    const { id } = req.params;
+    const updates = req.body;
+    const event = await Event.update(client, id, updates);
+    if (!event) {
+      return res.status(404).json({ error: "Event not found." });
     }
+    res.status(200).json(event);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  } finally {
+    if (client) client.release();
+  }
 };
 
-exports.deleteEvent = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const event = await Event.delete(id);
-
-        if (!event) {
-            return res.status(404).json({ error: "Event not found." });
-        }
-
-        res.status(204).send();
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+const deleteEvent = async (req, res) => {
+  let client;
+  try {
+    client = await pool.connect();
+    const { id } = req.params;
+    const event = await Event.delete(client, id);
+    if (!event) {
+      return res.status(404).json({ error: "Event not found." });
     }
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  } finally {
+    if (client) client.release();
+  }
 };
 
-exports.getEventById = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const event = await Event.findById(id);
-
-        if (!event) {
-            return res.status(404).json({ error: "Event not found." });
-        }
-
-        res.status(200).json(event);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+const getEventById = async (req, res) => {
+  let client;
+  try {
+    client = await pool.connect();
+    const { id } = req.params;
+    const event = await Event.findById(client, id);
+    if (!event) {
+      return res.status(404).json({ error: "Event not found." });
     }
+    res.status(200).json(event);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  } finally {
+    if (client) client.release();
+  }
 };
 
-exports.getAllEvents = async (req, res) => {
-    try {
-        const events = await Event.findAll();
-        res.status(200).json(events);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+const getAllEvents = async (req, res) => {
+  let client;
+  try {
+    client = await pool.connect();
+    const events = await Event.findAll(client);
+    res.status(200).json(events);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  } finally {
+    if (client) client.release();
+  }
+};
+
+const signUpForEvent = async (req, res) => {
+  let client;
+  try {
+    client = await pool.connect();
+    const { id } = req.params;
+    const { userId } = req.body;
+    const event = await Event.findById(client, id);
+    if (!event) {
+      return res.status(404).json({ error: "Event not found." });
     }
+    const user = await User.findById(client, userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+    await Event.signUp(client, id, userId);
+    res.status(200).json({ message: "User signed up for event successfully." });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  } finally {
+    if (client) client.release();
+  }
+};
+
+module.exports = {
+  createEvent,
+  updateEvent,
+  deleteEvent,
+  getEventById,
+  getAllEvents,
+  signUpForEvent,
 };
