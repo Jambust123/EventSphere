@@ -3,5 +3,5 @@
 .env.development
 .env.production
 node_modules
-config/credentials.json
-config/token.json
+calendatAuth/credentials.json
+calendatAuth/token.json
