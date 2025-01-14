@@ -7,13 +7,13 @@ require('dotenv').config({
 const config = {};
 
 if (ENV === 'production') {
-  config.connectionString = process.env.DATABASE_URL;
+  config.connectionString = process.env.PGDATABASE || process.env.DATABASE_URL;
   config.max = 2;
 } else {
-  config.database = process.env.PGDATABASE;
+  config.connectionString = process.env.PGDATABASE;
 }
 
-if (!process.env.PGDATABASE || !process.env.DATABASE_URL) {
+if (!config.connectionString) {
   throw new Error('PGDATABASE or DATABASE_URL not set');
 }
 
