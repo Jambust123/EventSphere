@@ -5,3 +5,5 @@
 node_modules
 calendarAuth/credentials.json
 calendarAuth/token.json
+calendarAuth\credentials.json
+calendarAuth\token.json
