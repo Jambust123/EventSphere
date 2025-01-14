@@ -4,6 +4,10 @@ require('dotenv').config({
   path: `${__dirname}/../.env.${ENV}`,
 });
 
+console.log(`Environment: ${ENV}`);
+console.log(`PGDATABASE: ${process.env.PGDATABASE}`);
+console.log(`DATABASE_URL: ${process.env.DATABASE_URL}`);
+
 const config = {};
 
 if (ENV === 'production') {
