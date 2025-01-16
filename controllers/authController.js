@@ -4,9 +4,10 @@ const User = require("../models/userModel");
 const pool = require("../db/connection");
 
 const signIn = async (req, res) => {
+    let client;
   try {
     const { email, password } = req.body;
-    const client = await pool.connect();
+    client = await pool.connect();
     const user = await User.findByEmail(client, email);
     if (!user) {
       console.log("User not found with email:", email); 

@@ -6,12 +6,12 @@ exports.createUser = async (req, res) => {
   let client;
   try {
     client = await pool.connect();
-    const { username, email, password } = req.body;
+    const { username, email, password, role } = req.body;
     if (!username || !email || !password) {
       return res.status(400).json({ error: "Missing required fields." });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create(client, { username, email, password: hashedPassword });
+    const user = await User.create(client, { username, email, password: hashedPassword, role });
     res.status(201).json(user);
   } catch (error) {
     console.error("Error creating user:", error); 
