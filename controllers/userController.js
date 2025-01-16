@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const User = require('../models/userModel');
 const pool = require('../db/connection');
 
@@ -9,7 +10,8 @@ exports.createUser = async (req, res) => {
     if (!username || !email || !password) {
       return res.status(400).json({ error: "Missing required fields." });
     }
-    const user = await User.create(client, { username, email, password });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create(client, { username, email, password: hashedPassword });
     res.status(201).json(user);
   } catch (error) {
     console.error("Error creating user:", error); 
@@ -39,6 +41,9 @@ exports.updateUser = async (req, res) => {
     client = await pool.connect();
     const { id } = req.params;
     const updates = req.body;
+    if (updates.password) {
+      updates.password = await bcrypt.hash(updates.password, 10);
+    }
     const user = await User.update(client, id, updates);
     if (!user) {
       return res.status(404).json({ error: "User not found." });
