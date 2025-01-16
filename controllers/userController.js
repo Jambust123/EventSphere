@@ -12,6 +12,7 @@ exports.createUser = async (req, res) => {
     const user = await User.create(client, { username, email, password });
     res.status(201).json(user);
   } catch (error) {
+    console.error("Error creating user:", error); 
     res.status(500).json({ error: "Internal server error." });
   } finally {
     if (client) client.release();

@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.status(200).json({ message: "Welcome to the Event Management API!" });
+  res.status(200).json({ message: "Welcome to the Event Management API! use /api endpoint to see all available endpoints" });
 });
 
 app.get("/api", (req, res) => {

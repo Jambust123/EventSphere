@@ -1,6 +1,6 @@
 {
     "GET /": {
-      "description": "Serves a welcome message use the /api endpoint to see all available endpoints"
+      "description": "Serves a welcome message "
     },
     "GET /api": {
       "description": "Serves a JSON object of all available endpoints"
