@@ -7,8 +7,10 @@ require('dotenv').config({
 const config = {};
 
 if (ENV === 'production') {
-  config.connectionString = process.env.DATABASE_URL || process.env.PGDATABASE;
-  config.max = 2;
+  config.connectionString = process.env.DATABASE_URL;
+  config.ssl = {
+    rejectUnauthorized: false,
+  };
 } else {
   config.connectionString = process.env.PGDATABASE;
 }
