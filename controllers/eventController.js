@@ -20,7 +20,8 @@ const createEvent = async (req, res) => {
     const event = await Event.create(client, eventData);
     res.status(201).json(event);
   } catch (error) {
-    res.status(400).json({ error: "Bad Request" });
+    console.error("Error creating event:", error);
+    res.status(500).json({ error: "Internal server error." });
   } finally {
     if (client) client.release();
   }
