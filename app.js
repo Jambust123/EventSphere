@@ -8,7 +8,11 @@ const endpoint = require("./endpoints.json");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:4000', 
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 app.get("/", (req, res) => {
