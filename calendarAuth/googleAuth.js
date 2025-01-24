@@ -15,13 +15,25 @@ async function authorize() {
     redirect_uris[0]
   );
 
-  try {
-    const token = fs.readFileSync(TOKEN_PATH, "utf8");
-    oAuth2Client.setCredentials(JSON.parse(token));
-    console.log("Token loaded from file and set.");
-  } catch (error) {
-    console.error("Error loading token from file:", error);
-    throw new Error("Token not found or invalid.");
+  const tokenJson = process.env.GOOGLE_TOKEN_JSON;
+  if (tokenJson) {
+    try {
+      const token = JSON.parse(tokenJson);
+      oAuth2Client.setCredentials(token);
+      console.log("Loaded token from environment variable:", token);
+    } catch (error) {
+      console.error("Error parsing token JSON:", error);
+      throw new Error("Invalid token JSON format.");
+    }
+  } else {
+    try {
+      const token = fs.readFileSync(TOKEN_PATH, "utf8");
+      oAuth2Client.setCredentials(JSON.parse(token));
+      console.log("Loaded token from file and set.");
+    } catch (error) {
+      console.error("Error loading token from file:", error);
+      throw new Error("Token not found or invalid.");
+    }
   }
 
   return oAuth2Client;
