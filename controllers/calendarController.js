@@ -46,13 +46,17 @@ async function createEvent(req, res) {
         timeZone: 'America/Los_Angeles',
       },
     };
+    console.log("Creating event with data:", event);
     calendar.events.insert(
       {
         calendarId: 'primary',
         resource: event,
       },
       (err, event) => {
-        if (err) return res.status(500).send('There was an error contacting the Calendar service: ' + err);
+        if (err) {
+          console.error('Error contacting the Calendar service:', err);
+          return res.status(500).send('There was an error contacting the Calendar service: ' + err);
+        }
         res.status(201).json(event.data);
       }
     );

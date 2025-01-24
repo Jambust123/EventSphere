@@ -2,8 +2,6 @@ const fs = require("fs");
 const { google } = require("googleapis");
 const path = require("path");
 
-const TOKEN_PATH = path.join(__dirname, "token.json");
-
 const SCOPES = ["https://www.googleapis.com/auth/calendar"];
 
 async function authorize(code) {
@@ -19,16 +17,21 @@ async function authorize(code) {
     if (code) {
         const { tokens } = await oAuth2Client.getToken(code);
         oAuth2Client.setCredentials(tokens);
-        fs.writeFileSync(TOKEN_PATH, JSON.stringify(tokens));
-        console.log("Token stored to", TOKEN_PATH);
+        console.log("Token obtained and set.");
         return oAuth2Client;
     }
 
     const tokenJson = process.env.GOOGLE_TOKEN_JSON;
     if (tokenJson) {
-        const token = JSON.parse(tokenJson);
-        oAuth2Client.setCredentials(token);
-        return oAuth2Client;
+        try {
+            const token = JSON.parse(tokenJson);
+            console.log("Loaded token from environment variable:", token);
+            oAuth2Client.setCredentials(token);
+            return oAuth2Client;
+        } catch (error) {
+            console.error("Error parsing token JSON:", error);
+            throw new Error("Invalid token JSON format.");
+        }
     }
 
     const authUrl = oAuth2Client.generateAuthUrl({
@@ -36,6 +39,7 @@ async function authorize(code) {
         scope: SCOPES,
     });
     console.log("Authorize this app by visiting this url:", authUrl);
+    return authUrl;
 }
 
 module.exports = authorize;
