@@ -34,6 +34,11 @@ const Event = {
     return result.rows;
   },
 
+  findSignup: async (client, eventId, userId) => {
+    const result = await client.query("SELECT * FROM event_signups WHERE event_id = $1 AND user_id = $2", [eventId, userId]);
+    return result.rows[0];
+  },
+
   signUp: async (client, eventId, userId) => {
     await client.query('INSERT INTO event_signups (event_id, user_id) VALUES ($1, $2)', [eventId, userId]);
   },
