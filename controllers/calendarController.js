@@ -23,19 +23,24 @@ async function createEvent(req, res) {
   try {
     const auth = await authorize();
     const calendar = google.calendar({ version: "v3", auth });
+
+    const startDateTime = new Date(req.body.start).toISOString();
+    const endDateTime = new Date(req.body.end).toISOString();
+
     const event = {
       summary: req.body.summary,
       location: req.body.location,
       description: req.body.description,
       start: {
-        dateTime: new Date(req.body.start).toISOString(),
+        dateTime: startDateTime,
         timeZone: 'America/Los_Angeles',
       },
       end: {
-        dateTime: new Date(req.body.end).toISOString(),
+        dateTime: endDateTime,
         timeZone: 'America/Los_Angeles',
       },
     };
+
     const response = await calendar.events.insert({
       calendarId: 'primary',
       resource: event,
