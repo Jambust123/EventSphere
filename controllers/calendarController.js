@@ -1,3 +1,4 @@
+// filepath: /Ubuntu/home/jambust123/gradProject/BE/controllers/calendarController.js
 const { google } = require("googleapis");
 const authorize = require("../calendarAuth/googleAuth");
 
@@ -24,11 +25,11 @@ async function createEvent(req, res) {
     const auth = await authorize();
     const calendar = google.calendar({ version: "v3", auth });
 
-    const startDateTime = new Date(req.body.start).toISOString();
-    const endDateTime = new Date(req.body.end).toISOString();
+    const startDateTime = new Date(req.body.date).toISOString();
+    const endDateTime = new Date(new Date(req.body.date).getTime() + 60 * 60 * 1000).toISOString(); // Assuming event duration is 1 hour
 
     const event = {
-      summary: req.body.summary,
+      summary: req.body.title,
       location: req.body.location,
       description: req.body.description,
       start: {
