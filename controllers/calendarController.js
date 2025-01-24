@@ -34,15 +34,15 @@ async function createEvent(req, res) {
     const auth = await authorize();
     const calendar = google.calendar({ version: 'v3', auth });
     const event = {
-      summary: req.body.summary,
-      location: req.body.location,
-      description: req.body.description,
+      summary: req.body.summary || "Default Summary",
+      location: req.body.location || "Default Location",
+      description: req.body.description || "Default Description",
       start: {
-        dateTime: req.body.start,
+        dateTime: req.body.start || new Date().toISOString(),
         timeZone: 'America/Los_Angeles',
       },
       end: {
-        dateTime: req.body.end,
+        dateTime: req.body.end || new Date(new Date().getTime() + 60 * 60 * 1000).toISOString(),
         timeZone: 'America/Los_Angeles',
       },
     };
