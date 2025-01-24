@@ -1,4 +1,3 @@
-// filepath: /Ubuntu/home/jambust123/gradProject/BE/controllers/calendarController.js
 const { google } = require("googleapis");
 const authorize = require("../calendarAuth/googleAuth");
 
@@ -29,11 +28,11 @@ async function createEvent(req, res) {
       location: req.body.location,
       description: req.body.description,
       start: {
-        dateTime: req.body.start,
+        dateTime: new Date(req.body.start).toISOString(),
         timeZone: 'America/Los_Angeles',
       },
       end: {
-        dateTime: req.body.end,
+        dateTime: new Date(req.body.end).toISOString(),
         timeZone: 'America/Los_Angeles',
       },
     };
