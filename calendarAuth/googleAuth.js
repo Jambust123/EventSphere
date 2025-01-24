@@ -27,6 +27,14 @@ async function authorize(code) {
             const token = JSON.parse(tokenJson);
             console.log("Loaded token from environment variable:", token);
             oAuth2Client.setCredentials(token);
+
+            // Refresh the token if it's expired
+            if (oAuth2Client.isTokenExpiring()) {
+                const newTokens = await oAuth2Client.refreshAccessToken();
+                oAuth2Client.setCredentials(newTokens.credentials);
+                console.log("Token refreshed and set.");
+            }
+
             return oAuth2Client;
         } catch (error) {
             console.error("Error parsing token JSON:", error);
