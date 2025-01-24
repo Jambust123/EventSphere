@@ -3,50 +3,28 @@ const { google } = require("googleapis");
 const path = require("path");
 
 const SCOPES = ["https://www.googleapis.com/auth/calendar"];
+const TOKEN_PATH = path.join(__dirname, "token.json");
 
-async function authorize(code) {
-    const client_id = process.env.GOOGLE_CLIENT_ID;
-    const client_secret = process.env.GOOGLE_CLIENT_SECRET;
-    const redirect_uris = [process.env.GOOGLE_REDIRECT_URI];
-    const oAuth2Client = new google.auth.OAuth2(
-        client_id,
-        client_secret,
-        redirect_uris[0]
-    );
+async function authorize() {
+  const client_id = process.env.GOOGLE_CLIENT_ID;
+  const client_secret = process.env.GOOGLE_CLIENT_SECRET;
+  const redirect_uris = [process.env.GOOGLE_REDIRECT_URI];
+  const oAuth2Client = new google.auth.OAuth2(
+    client_id,
+    client_secret,
+    redirect_uris[0]
+  );
 
-    if (code) {
-        const { tokens } = await oAuth2Client.getToken(code);
-        oAuth2Client.setCredentials(tokens);
-        console.log("Token obtained and set.");
-        return oAuth2Client;
-    }
+  try {
+    const token = fs.readFileSync(TOKEN_PATH, "utf8");
+    oAuth2Client.setCredentials(JSON.parse(token));
+    console.log("Token loaded from file and set.");
+  } catch (error) {
+    console.error("Error loading token from file:", error);
+    throw new Error("Token not found or invalid.");
+  }
 
-    const tokenJson = process.env.GOOGLE_TOKEN_JSON;
-    if (tokenJson) {
-        try {
-            const token = JSON.parse(tokenJson);
-            console.log("Loaded token from environment variable:", token);
-            oAuth2Client.setCredentials(token);
-
-            if (oAuth2Client.isTokenExpiring()) {
-                const newTokens = await oAuth2Client.refreshAccessToken();
-                oAuth2Client.setCredentials(newTokens.credentials);
-                console.log("Token refreshed and set.");
-            }
-
-            return oAuth2Client;
-        } catch (error) {
-            console.error("Error parsing token JSON:", error);
-            throw new Error("Invalid token JSON format.");
-        }
-    }
-
-    const authUrl = oAuth2Client.generateAuthUrl({
-        access_type: "offline",
-        scope: SCOPES,
-    });
-    console.log("Authorize this app by visiting this url:", authUrl);
-    return authUrl;
+  return oAuth2Client;
 }
 
 module.exports = authorize;
