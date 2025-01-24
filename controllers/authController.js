@@ -4,7 +4,7 @@ const User = require("../models/userModel");
 const pool = require("../db/connection");
 
 const signIn = async (req, res) => {
-    let client;
+  let client;
   try {
     const { email, password } = req.body;
     client = await pool.connect();
@@ -21,7 +21,7 @@ const signIn = async (req, res) => {
     }
 
     const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    res.json({ token });
+    res.json({ token, userId: user.id }); 
   } catch (error) {
     console.error("Error during sign-in:", error);
     res.status(500).json({ error: "Internal server error." });
