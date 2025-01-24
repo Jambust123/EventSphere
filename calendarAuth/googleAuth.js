@@ -3,14 +3,14 @@ const { google } = require("googleapis");
 const readline = require("readline");
 const path = require("path");
 
-const CREDENTIALS_PATH = path.join(__dirname, "credentials.json");
 const TOKEN_PATH = path.join(__dirname, "token.json");
 
 const SCOPES = ["https://www.googleapis.com/auth/calendar"];
 
 async function authorize() {
-    const credentials = JSON.parse(fs.readFileSync(CREDENTIALS_PATH));
-    const { client_secret, client_id, redirect_uris } = credentials.installed;
+    const client_id = process.env.GOOGLE_CLIENT_ID;
+    const client_secret = process.env.GOOGLE_CLIENT_SECRET;
+    const redirect_uris = [process.env.GOOGLE_REDIRECT_URI];
     const oAuth2Client = new google.auth.OAuth2(
         client_id,
         client_secret,
